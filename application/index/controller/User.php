@@ -58,8 +58,8 @@ class User extends Frontend
     {
         $this->view->assign('title', __('User center'));
 
-        var_dump($this->view->assign);
-        die;
+        // var_dump($this->view->assign);
+        // die;
         return $this->view->fetch();
     }
 
