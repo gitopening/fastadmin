@@ -7,13 +7,7 @@
                 <input type="hidden" name="invite_user_id" value="0"/>
                 <input type="hidden" name="url" value="{$url|htmlentities}"/>
                 {:token()}
-                <div class="form-group">
-                    <label class="control-label required">{:__('Email')}<span class="text-success"></span></label>
-                    <div class="controls">
-                        <input type="text" name="email" id="email" data-rule="required;email" class="form-control" placeholder="{:__('Email')}">
-                        <p class="help-block"></p>
-                    </div>
-                </div>
+               
                 <div class="form-group">
                     <label class="control-label">{:__('Username')}</label>
                     <div class="controls">
@@ -28,14 +22,7 @@
                         <p class="help-block"></p>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="control-label">{:__('Mobile')}</label>
-                    <div class="controls">
-                        <input type="text" id="mobile" name="mobile" data-rule="required;mobile" class="form-control" placeholder="{:__('Mobile')}">
-                        <p class="help-block"></p>
-                    </div>
-                </div>
-
+                
                 <!--@CaptchaBegin-->
                 {if $captchaType}
                 <div class="form-group">

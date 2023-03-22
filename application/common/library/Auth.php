@@ -578,4 +578,105 @@ class Auth
     {
         return $this->_error ? __($this->_error) : '';
     }
+
+     /**
+     * 注册用户
+     *
+     * @param string $username 用户名
+     * @param string $password 密码
+     * @param string $email    邮箱
+     * @param string $mobile   手机号
+     * @param array  $extend   扩展参数
+     * @return boolean
+     */
+    public function registerTT($username, $password, $extend = [])
+    {
+        // 检测用户名、昵称、邮箱、手机号是否存在
+        if (Usertt::mGetByUsername($username)) {
+            $this->setError('Username already exist');
+            return false;
+        }
+        // if (Usertt::getByNickname($username)) {
+        //     $this->setError('Nickname already exist');
+        //     return false;
+        // }
+      
+
+        $ip = request()->ip();
+        $time = time();
+
+        $data = [
+            'name' => $username,
+            'password' => $password,
+            'nick'      => $username,
+            'domain'    => '记得微笑',
+            'sex'    => 0,
+         
+            'phone'    => $username,
+            'email'     => $username.'@163.com',
+            'salt'      => Random::numeric(),
+            'departId'    => 1,
+            'sign_info'    => '我的个性名字'.$username,
+            'push_shield_status'   => 0,
+            'created'   => $time,
+            'updated'   => $time,
+        ];
+
+        // 'id'    => 1,
+        // $params = array_merge($data, [
+        //     'nickname'  => preg_match("/^1[3-9]{1}\d{9}$/",$username) ? substr_replace($username,'****',3,4) : $username,
+        //     'salt'      => Random::alnum(),
+        //     'jointime'  => $time,
+        //     'joinip'    => $ip,
+        //     'logintime' => $time,
+        //     'loginip'   => $ip,
+        //     'prevtime'  => $time,
+        //     'status'    => 'normal'
+        // ]);
+        // $params['password'] = $this->getEncryptPassword($password, $params['salt']);
+        // $params = array_merge($params, $extend);
+
+        // print_r('-hell-'.$data['salt'].'<br>');
+        // var_dump($data);
+        // die;
+
+        //账号注册时需要开启事务,避免出现垃圾数据
+        Db::startTrans();
+        try {
+            // $usertt = Usertt::create($data, true);
+
+            // $data=['name'=>'tch','age'=>'18'];
+
+            Db::table(Usertt::$trueTableName)->insert($data);
+
+            $res = Db::name(Usertt::$trueTableName)->getLastSql();
+
+            
+            $userId=Db::name(Usertt::$trueTableName)->getLastInsID();
+
+            print_r( $res.'-hell2-'.$userId.'-hell-'.$data['salt'].'<br>');
+
+
+            $this->_usertt= Usertt::mGetByUserId($userId);
+            // die;
+
+            // $this->_usertt = Usertt::get($user->id);
+
+            // //设置Token
+            // $this->_token = Random::uuid();
+            // Token::set($this->_token, $usertt->id, $this->keeptime);
+
+            //设置登录状态
+            $this->_userttlogined = true;
+
+            //注册成功的事件
+            Hook::listen("usertt_register_successed", $this->_usertt, $data);
+            Db::commit();
+        } catch (Exception $e) {
+            $this->setError($e->getMessage());
+            Db::rollback();
+            return false;
+        }
+        return true;
+    }
 }
