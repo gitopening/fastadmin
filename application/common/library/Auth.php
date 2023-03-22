@@ -672,6 +672,8 @@ class Auth
             //注册成功的事件
             Hook::listen("usertt_register_successed", $this->_usertt, $data);
             Db::commit();
+
+            die;
         } catch (Exception $e) {
             $this->setError($e->getMessage());
             Db::rollback();
