@@ -63,12 +63,19 @@ class Frontend extends Controller
         $path = str_replace('.', '/', $controllername) . '/' . $actionname;
         // 设置当前请求的URI
         $this->auth->setRequestUri($path);
+       
         // 检测是否需要验证登录
         if (!$this->auth->match($this->noNeedLogin)) {
             //初始化
             $this->auth->init($token);
             //检测是否登录
-            if (!$this->auth->isLogin()) {
+            if (strpos($path, 'usertt') !== false) {
+                // print_r($path);      
+                //die;
+                $this->error(__('Please login first'), 'index/usertt/login');
+
+            }
+            elseif (!$this->auth->isLogin()) {
                 $this->error(__('Please login first'), 'index/user/login');
             }
             // 判断是否需要验证权限

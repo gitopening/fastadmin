@@ -3,6 +3,7 @@
 namespace app\common\library;
 
 use app\common\model\User;
+use app\common\model\Usertt;
 use app\common\model\UserRule;
 use fast\Random;
 use think\Config;
@@ -17,6 +18,8 @@ class Auth
     protected static $instance = null;
     protected $_error = '';
     protected $_logined = false;
+    protected $_userttlogined = false;
+    protected $_usertt = null;
     protected $_user = null;
     protected $_token = '';
     //Token默认有效时长
@@ -295,6 +298,8 @@ class Auth
     public function direct($user_id)
     {
         $user = User::get($user_id);
+        $usertt =Usertt::get($user_id);
+        
         if ($user) {
             Db::startTrans();
             try {
